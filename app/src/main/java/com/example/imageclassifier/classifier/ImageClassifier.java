@@ -1,6 +1,7 @@
 package com.example.imageclassifier.classifier;
 
 import android.graphics.Bitmap;
+import android.widget.Toast;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
@@ -23,8 +24,8 @@ import java.util.Map;
 public class ImageClassifier {
 
     // Quantized MobileNet models requires additional dequantization to the output probability
-    private static final float PROBABILITY_MEAN = 0.0f;
-    private static final float PROBABILITY_STD = 255.0f;
+    private static final float PROBABILITY_MEAN = 0.0f; //0.0f
+    private static final float PROBABILITY_STD = 255.0f; //255.0f
 
     //The quantized model does not require normalization, thus set mean as 0.0f, and std as 1.0f to bypass the normalization.
     private static final float image_STD = 1.0f;
@@ -80,13 +81,17 @@ public class ImageClassifier {
 
         inputImageBuffer = loadImage(bitmap, sensorOrientation);
         tensorClassifier.run(inputImageBuffer.getBuffer(), probabilityImageBuffer.getBuffer().rewind());
-
+        /*
         // Gets the map of label and probability.
         Map<String, Float> labelledProbability = new TensorLabel(labels,
                 probabilityProcessor.process(probabilityImageBuffer)).getMapWithFloatValue();
 
+         */
+        Map<String, Float> labelledProbability = new TensorLabel(labels, probabilityImageBuffer).getMapWithFloatValue();
+
         for (Map.Entry<String, Float> entry : labelledProbability.entrySet()) {
             recognitions.add(new Recognition(entry.getKey(), entry.getValue()));
+            System.out.println("----- Key: "+entry.getKey()+"   |    "+" PROB: "+entry.getValue());
         }
 
         // Find the best classifications by sorting predicitons based on confidence
@@ -104,6 +109,7 @@ public class ImageClassifier {
         int noOfRotations = sensorOrientation / 90;
         int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
 
+        System.out.println("Teste: "+imageResizeX+"  |  "+imageResizeY);
         // Creates processor for the TensorImage.
         // pre processing steps are applied here
         ImageProcessor imageProcessor = new ImageProcessor.Builder()
