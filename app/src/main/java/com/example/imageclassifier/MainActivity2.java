@@ -1,29 +1,17 @@
 package com.example.imageclassifier;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
-
 
 public class MainActivity2 extends AppCompatActivity {
 
@@ -33,6 +21,7 @@ public class MainActivity2 extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("+++++++++++ FLAG 1: MainActivity2 - onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
@@ -47,9 +36,10 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     private void  writeTextView(TextView textView, String id){
+        System.out.println("+++++++++++ FLAG 2: MainActivity2 - writeTextView");
         String text = "";
         try {
-            InputStream inputStream = getAssets().open("class_info_txt/" + id + ".txt");
+            InputStream inputStream = getAssets().open("info_azulejos_txt/" + id + ".txt");
             int size = inputStream.available();
             byte[] buffer = new byte[size];
 

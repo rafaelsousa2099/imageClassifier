@@ -33,7 +33,6 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private ImageView imageView;
     private ListView listView;
     private Button buttonTakePicture;
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("+++++++++++ FLAG 1: MainActivity - onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUIElements() {
+        System.out.println("+++++++++++ FLAG 2: MainActivity - initializeUIElements");
         imageView = findViewById(R.id.ImageView_canvas);
         listView = findViewById(R.id.listView_accuracy);
         buttonTakePicture = findViewById(R.id.button_camera);
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         // Chamada da classe de classificação da imagem
         try {
             //add path
-            MappedByteBuffer classifierModel = FileUtil.loadMappedFile(this, "model_sgd.tflite");
+            MappedByteBuffer classifierModel = FileUtil.loadMappedFile(this, "model_sgd2.tflite");
             List<String> labels = FileUtil.loadLabels(this, "labels.txt");
 
             imageClassifier = new ImageClassifier(classifierModel, labels);
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         buttonTakePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("+++++++++++ FLAG 3: MainActivity - initializeUIElements - onClick");
                 if (hasPermission()) {
                     openCamera();
                 } else {
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        System.out.println("+++++++++++ FLAG 4: MainActivity - onActivityResult");
         // Utilizando a imagem da foto
         if (requestCode == CAMERA_REQUEST) {
             // bitmap da imagem
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 // position -> mostra a possição onde esta sendo clicado.
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    System.out.println("+++++++++++ FLAG 5: MainActivity - onActivityResult - onItemClick");
                     //Toast.makeText(MainActivity.this, "Classe: "+ predicitons.get(position).getName(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this, MainActivity2.class);
                     intent.putExtra("class", predicitons.get(position).getName());
@@ -122,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        System.out.println("+++++++++++ FLAG 6: MainActivity - onRequestPermissionsResult");
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_REQUEST) {
             if (hasAllPermissions(grantResults)) {
@@ -133,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean hasAllPermissions(int[] grantResults) {
+        System.out.println("+++++++++++ FLAG 7: MainActivity - hasAllPermissions");
         for (int result : grantResults) {
             if (result == PackageManager.PERMISSION_DENIED)
                 return false;
@@ -141,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
+        System.out.println("+++++++++++ FLAG 8: MainActivity - requestPermission");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 Toast.makeText(this, "Permissão da câmera requerida", Toast.LENGTH_SHORT).show();
@@ -150,11 +157,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
+        System.out.println("+++++++++++ FLAG 9: MainActivity - openCamera");
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
     private boolean hasPermission() {
+        System.out.println("+++++++++++ FLAG 10: MainActivity - hasPermission");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
         }

@@ -1,7 +1,6 @@
 package com.example.imageclassifier.classifier;
 
 import android.graphics.Bitmap;
-import android.widget.Toast;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
@@ -24,8 +23,8 @@ import java.util.Map;
 public class ImageClassifier {
 
     // Quantized MobileNet models requires additional dequantization to the output probability
-    private static final float PROBABILITY_MEAN = 0.0f; //0.0f
-    private static final float PROBABILITY_STD = 255.0f; //255.0f
+    private static final float PROBABILITY_MEAN = 0.0f;
+    private static final float PROBABILITY_STD = 255.0f;
 
     //The quantized model does not require normalization, thus set mean as 0.0f, and std as 1.0f to bypass the normalization.
     private static final float image_STD = 1.0f;
@@ -43,6 +42,7 @@ public class ImageClassifier {
     private List <String> labels;
 
     public ImageClassifier(MappedByteBuffer classifierModel, List <String> labels) {
+        System.out.println("+++++++++++ FLAG 1: ImageClassifier");
         this.labels = labels;
         tensorClassifier = new Interpreter(classifierModel, null);
 
@@ -77,16 +77,18 @@ public class ImageClassifier {
      * @return classification results
      */
     public List<Recognition> recognizeImage(final Bitmap bitmap, final int sensorOrientation) {
+        System.out.println("+++++++++++ FLAG 2: ImageClassifier - recognizeImage");
         List<Recognition> recognitions = new ArrayList<>();
 
         inputImageBuffer = loadImage(bitmap, sensorOrientation);
         tensorClassifier.run(inputImageBuffer.getBuffer(), probabilityImageBuffer.getBuffer().rewind());
+
         /*
         // Gets the map of label and probability.
         Map<String, Float> labelledProbability = new TensorLabel(labels,
                 probabilityProcessor.process(probabilityImageBuffer)).getMapWithFloatValue();
+        */
 
-         */
         Map<String, Float> labelledProbability = new TensorLabel(labels, probabilityImageBuffer).getMapWithFloatValue();
 
         for (Map.Entry<String, Float> entry : labelledProbability.entrySet()) {
@@ -103,6 +105,7 @@ public class ImageClassifier {
 
 
     private TensorImage loadImage(Bitmap bitmap, int sensorOrientation) {
+        System.out.println("+++++++++++ FLAG 3: ImageClassifier - loadImage");
         // Loads bitmap into a TensorImage.
         inputImageBuffer.load(bitmap);
 
@@ -114,7 +117,8 @@ public class ImageClassifier {
         // pre processing steps are applied here
         ImageProcessor imageProcessor = new ImageProcessor.Builder()
                 .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
-                .add(new ResizeOp(imageResizeX, imageResizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+                //.add(new ResizeOp(imageResizeX, imageResizeY, ResizeOp.ResizeMethod.BILINEAR))
+                .add(new ResizeOp(imageResizeX, imageResizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR)) // original
                 .add(new Rot90Op(noOfRotations))
                 .add(new NormalizeOp(image_MEAN, image_STD))
                 .build();
