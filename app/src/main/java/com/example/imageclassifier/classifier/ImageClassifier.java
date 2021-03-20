@@ -110,7 +110,7 @@ public class ImageClassifier {
         inputImageBuffer.load(bitmap);
 
         int noOfRotations = sensorOrientation / 90;
-        int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
+        int cropSize = Math.max(bitmap.getWidth(), bitmap.getHeight());
 
         System.out.println("Teste: "+imageResizeX+"  |  "+imageResizeY);
         // Creates processor for the TensorImage.
