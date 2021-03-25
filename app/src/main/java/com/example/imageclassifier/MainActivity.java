@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         // Chamada da classe de classificação da imagem
         try {
             //add path
-            MappedByteBuffer classifierModel = FileUtil.loadMappedFile(this, "model_sgd2.tflite");
+            MappedByteBuffer classifierModel = FileUtil.loadMappedFile(this, "model.tflite");
             List<String> labels = FileUtil.loadLabels(this, "labels.txt");
 
             imageClassifier = new ImageClassifier(classifierModel, labels);
